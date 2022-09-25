@@ -4,7 +4,7 @@ defmodule Ets.Pruner do
   @table :ets_cache
   @time 500
 
-  def start_link() do
+  def start_link(_) do
     Task.start_link(&prune/0)
   end
 

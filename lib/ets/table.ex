@@ -3,7 +3,7 @@ defmodule Ets.Table do
 
   @table :ets_cache
 
-  def start_link do
+  def start_link(_) do
     Task.start_link(&init/0)
   end
 
