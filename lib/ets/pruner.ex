@@ -1,21 +1,22 @@
 defmodule Ets.Pruner do
-  use Task, restart: :permanent
+  use GenServer
 
   @table :ets_cache
   @time 500
 
   def start_link(_) do
-    Task.start_link(&prune/0)
+    GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
-  def prune do
-    receive do
-    after
-      @time ->
-        @table
-        |> :ets.tab2list()
-        |> Enum.map(&apply_cache/1)
-    end
+  def init(_) do
+    {:ok,
+     receive do
+     after
+       @time ->
+         @table
+         |> :ets.tab2list()
+         |> Enum.map(&apply_cache/1)
+     end}
   end
 
   def apply_cache({key, %{"ttl_reference" => ttl_reference}}) do

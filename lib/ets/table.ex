@@ -1,13 +1,16 @@
 defmodule Ets.Table do
-  use Task, restart: :permanent
+  use GenServer
 
   @table :ets_cache
 
-  def start_link(_) do
-    Task.start_link(&init/0)
+  def start_link(_state) do
+    GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
-  def init do
-    :ets.new(@table, [:set, :public, :named_table])
+  @impl true
+  def init(_stack) do
+    with @table <- :ets.new(@table, [:set, :public, :named_table]) do
+      {:ok, :ets_cache}
+    end
   end
 end
