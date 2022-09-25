@@ -12,7 +12,7 @@ defmodule Ets do
 
   @impl true
   def init(stack) do
-    with @table <- :ets.new(@table, [:bag, :public, :named_table]) do
+    with @table <- :ets.new(@table, [:set, :public, :named_table]) do
       {:ok, stack}
     end
   end
