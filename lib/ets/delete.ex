@@ -1,12 +1,13 @@
 defmodule Ets.Delete do
   @table :ets_cache
 
-  alias Ets.Get
-
   def call(key) do
-    with {:ok, value} <- Get.call(key),
+    with [{^key, value}] <- :ets.lookup(@table, key),
          true <- :ets.delete(@table, key) do
       {:ok, %{"deleted" => value}}
+    else
+      [] ->
+        {:error, "Key does not exist!"}
     end
   end
 end

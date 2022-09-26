@@ -9,14 +9,15 @@ defmodule Ets.Pruner do
   end
 
   def init(_) do
-    {:ok,
-     receive do
-     after
-       @time ->
-         @table
-         |> :ets.tab2list()
-         |> Enum.map(&apply_cache/1)
-     end}
+    {:ok, prune()}
+  end
+
+  def prune do
+    @table
+    |> :ets.tab2list()
+    |> Enum.map(&apply_cache/1)
+
+    :timer.apply_after(@time, __MODULE__, :prune, [])
   end
 
   def apply_cache({key, %{"ttl_reference" => ttl_reference}}) do

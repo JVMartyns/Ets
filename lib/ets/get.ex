@@ -7,7 +7,7 @@ defmodule Ets.Get do
         {:ok, values}
 
       [] ->
-        {:error, :not_found}
+        {:error, "key not found"}
     end
   end
 end

@@ -28,9 +28,14 @@ defmodule Ets.Insert do
         {:error, "key already exists!"}
 
       false ->
-        with true <- :ets.insert(@table, {key, values}) do
+        with true <- :ets.insert(@table, {key, values}),
+             {:ok, _} <- schedule_deletion(ttl, key) do
           {:ok, values}
         end
     end
+  end
+
+  def schedule_deletion(ttl, key) do
+    :timer.apply_after(ttl * 1000, :ets, :delete, [@table, key])
   end
 end
